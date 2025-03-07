@@ -1,30 +1,7 @@
 import { browse, MulticastInterface } from "jsr:@earthstar/dns-sd";
 import { DriverDeno } from "jsr:@earthstar/dns-sd/deno";
 import qrcode from "npm:qrcode-terminal";
-
-class Adb {
-  static async pair(
-    { host, port, pass }: { host: string; port: number; pass: string },
-  ) {
-    const status = await new Deno.Command("adb", {
-      args: ["pair", `${host}:${port}`, pass],
-    }).spawn().status;
-    if (!status.success) {
-      throw new Error(`ADB pair failed: ${status.code}`);
-    }
-    return status;
-  }
-
-  static async connect({ host, port }: { host: string; port: number }) {
-    const status = await new Deno.Command("adb", {
-      args: ["connect", `${host}:${port}`],
-    }).spawn().status;
-    if (!status.success) {
-      throw new Error(`ADB connect failed: ${status.code}`);
-    }
-    return status;
-  }
-}
+import { Adb } from "./adb.ts";
 
 function showQr({ name, pass }: { name: string; pass: string }) {
   qrcode.generate(`WIFI:T:ADB;S:${name};P:${pass};;`);
@@ -56,17 +33,15 @@ async function startDiscovery({ pass }: { pass: string }) {
         `📡 ${service.name} - ${service.host}:${service.port} (Pairing)`,
       );
       console.log(`Pairing with ${service.host}:${service.port}`);
-      try {
-        const status = await Adb.pair({
-          host: service.host,
-          port: service.port,
-          pass,
-        });
-        if (status.success) {
-          console.log("Pairing successful.");
-        }
-      } catch (error) {
-        console.error("Pairing failed:", error);
+      const status = await Adb.pair({
+        host: service.host,
+        port: service.port,
+        pass,
+      });
+      if (status.success) {
+        console.log("Pairing successful.");
+      } else {
+        console.log("Pairing failed.");
       }
     }
   };
@@ -77,16 +52,14 @@ async function startDiscovery({ pass }: { pass: string }) {
         `📡 ${service.name} - ${service.host}:${service.port} (Connect)`,
       );
       console.log(`Connecting to ${service.host}:${service.port}`);
-      try {
-        const status = await Adb.connect({
-          host: service.host,
-          port: service.port,
-        });
-        if (status.success) {
-          console.log("Connection successful!");
-        }
-      } catch (err) {
-        console.error("Connection failed:", err);
+      const status = await Adb.connect({
+        host: service.host,
+        port: service.port,
+      });
+      if (status.success) {
+        console.log("Connection successful!");
+      } else {
+        console.log("Connection failed.");
       }
     }
   };
@@ -107,9 +80,23 @@ async function startDiscovery({ pass }: { pass: string }) {
   console.log("Discovery finished.");
 }
 
+// Function to generate a random string
+function generateRandomString(length: number) {
+  const randomBytes = crypto.getRandomValues(new Uint8Array(length)); // Use the global crypto object
+  return Array.from(randomBytes)
+    .map((byte) => byte.toString(16).padStart(2, "0"))
+    .join("");
+}
+
 if (import.meta.main) {
-  const name = "debug";
-  const pass = "123456";
+  // Generate a random name (e.g., 8 hex characters)
+  const name = `debug-${generateRandomString(4)}`;
+
+  // Generate a strong, random password (e.g., 16 hex characters - 128 bits of entropy)
+  const pass = generateRandomString(8);
+
+  console.log(`Generated Name: ${name}`);
+  console.log(`Generated Pass: ${pass}`); // Display the password for manual entry if needed
 
   showQr({ name, pass });
   startDiscovery({ pass });
