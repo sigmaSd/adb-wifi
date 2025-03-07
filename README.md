@@ -23,6 +23,12 @@ This tool simplifies the process of connecting to Android devices over WiFi usin
 deno -NS --unstable-net --allow-run=adb main.ts
 ```
 
+You can also run the script remotly with no setup
+
+```bash
+deno -NS --unstable-net --allow-run=adb https://raw.githubusercontent.com/sigmaSd/adb-wifi/refs/heads/master/main.ts
+```
+
 2. The script will:
    - Generate a random name and password for the connection
    - Display a QR code that can be scanned from your Android device
