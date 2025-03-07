@@ -1,6 +1,10 @@
-import { browse, MulticastInterface } from "jsr:@earthstar/dns-sd";
-import { DriverDeno } from "jsr:@earthstar/dns-sd/deno";
-import qrcode from "npm:qrcode-terminal";
+import {
+  browse,
+  MulticastInterface,
+  Service,
+} from "jsr:@earthstar/dns-sd@3.1.0";
+import { DriverDeno } from "jsr:@earthstar/dns-sd@3.1.0/deno";
+import qrcode from "npm:qrcode-terminal@0.12.0";
 import { Adb } from "./adb.ts";
 
 function showQr({ name, pass }: { name: string; pass: string }) {
@@ -26,8 +30,7 @@ async function startDiscovery({ pass }: { pass: string }) {
     },
   });
 
-  // deno-lint-ignore no-explicit-any
-  const handlePairingService = async (service: any) => {
+  const handlePairingService = async (service: Service) => {
     if (service.isActive) {
       console.log(
         `📡 ${service.name} - ${service.host}:${service.port} (Pairing)`,
@@ -45,8 +48,7 @@ async function startDiscovery({ pass }: { pass: string }) {
       }
     }
   };
-  // deno-lint-ignore no-explicit-any
-  const handleConnectService = async (service: any) => {
+  const handleConnectService = async (service: Service) => {
     if (service.isActive) {
       console.log(
         `📡 ${service.name} - ${service.host}:${service.port} (Connect)`,
