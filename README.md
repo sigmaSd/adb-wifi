@@ -40,6 +40,7 @@ deno -NS --unstable-net --allow-run=adb https://raw.githubusercontent.com/sigmaS
    - Scan the QR code displayed in your terminal
 
 4. The script will automatically detect your device and attempt to pair and connect to it.
+5. Afer pairing, you might need to disable then enable wifi debugging on the phone, so it sends the connect message.
 
 ## How It Works
 
