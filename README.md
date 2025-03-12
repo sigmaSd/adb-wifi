@@ -11,7 +11,7 @@ This tool simplifies the process of connecting to Android devices over WiFi usin
 
 ## Prerequisites
 
-- Deno runtime (1.37 or newer)
+- Deno runtime
 - An Android device with Developer Options enabled
 - Wireless Debugging enabled on your Android device
 
