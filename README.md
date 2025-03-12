@@ -42,6 +42,8 @@ deno -NS --unstable-net --allow-run=adb https://raw.githubusercontent.com/sigmaS
 4. The script will automatically detect your device and attempt to pair and connect to it.
 5. Afer pairing, you might need to disable then enable wifi debugging on the phone, so it sends the connect message.
 
+Note: discovering mDns messages can take 10s of seconds.
+
 ## How It Works
 
 The tool uses mDNS (multicast DNS) to discover Android devices that are advertising ADB over WiFi services on your local network. It listens for two service types:
